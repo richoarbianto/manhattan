@@ -208,4 +208,6 @@ Kirim ciphertext ────────► Teruskan ke semua ─────�
 
 ## Lisensi
 
-Private project.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Live](https://img.shields.io/badge/live-ricoo.dev-2563EB?style=flat-square)](https://ricoo.dev)
+
