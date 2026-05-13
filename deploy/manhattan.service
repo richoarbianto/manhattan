@@ -1,0 +1,16 @@
+[Unit]
+Description=Manhattan E2EE Chat Application
+After=network.target mysql.service
+
+[Service]
+User=manhattan
+WorkingDirectory=/opt/manhattan/server
+ExecStart=/usr/bin/java -jar -Dspring.profiles.active=prod build/libs/manhattan-0.0.1-SNAPSHOT.jar
+EnvironmentFile=/opt/manhattan/.env
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

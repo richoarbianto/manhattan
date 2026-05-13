@@ -1,0 +1,45 @@
+# Java / Gradle
+build/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+out/
+bin/
+
+# Node
+node_modules/
+dist/
+.cache/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Test output
+coverage/
+test-results/

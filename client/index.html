@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhattan</title>
+
+    <!-- Google Fonts: JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (built output) -->
+    <link rel="stylesheet" href="./dist/output.css">
+
+    <style>
+        /* Fallback styles before Tailwind loads */
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body class="bg-terminal-bg text-terminal-text font-mono min-h-screen">
+    <div id="app" class="container mx-auto max-w-4xl px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-terminal-green terminal-text-glow animate-pulse-glow">
+                Manhattan
+            </h1>
+            <p class="text-terminal-muted text-sm mt-2">End-to-end encrypted group chat</p>
+        </header>
+
+        <!-- Main content area (populated by controllers) -->
+        <main id="main-content" class="terminal-panel">
+            <div class="text-center py-12">
+                <p class="text-terminal-green animate-pulse-glow">Initializing...</p>
+                <span class="inline-block w-2 h-4 bg-terminal-green animate-blink ml-1"></span>
+            </div>
+        </main>
+
+        <!-- Status bar -->
+        <footer id="status-bar" class="mt-4 text-xs text-terminal-muted text-center">
+            <span id="connection-status">Disconnected</span>
+        </footer>
+    </div>
+
+    <!-- Argon2 WASM (loaded before bundle) -->
+    <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"></script>
+
+    <script src="./dist/bundle.js" type="module"></script>
+</body>
+</html>
