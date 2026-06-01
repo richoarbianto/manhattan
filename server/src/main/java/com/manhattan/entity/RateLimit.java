@@ -1,40 +1,35 @@
 package com.manhattan.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "rate_limits")
+@Document(collection = "rate_limits")
 public class RateLimit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "client_ip", nullable = false, length = 45)
+    @Field("client_ip")
     private String clientIp;
 
-    @Column(name = "room_name", nullable = false, length = 15)
+    @Field("room_name")
     private String roomName;
 
-    @Column(name = "failed_attempts", nullable = false)
+    @Field("failed_attempts")
     private int failedAttempts;
 
-    @Column(name = "locked_until")
+    @Field("locked_until")
     private LocalDateTime lockedUntil;
 
-    @Column(name = "last_attempt_at", nullable = false)
+    @Field("last_attempt_at")
     private LocalDateTime lastAttemptAt;
 
     public RateLimit() {
     }
 
-    public RateLimit(Long id, String clientIp, String roomName, int failedAttempts, LocalDateTime lockedUntil,
+    public RateLimit(String id, String clientIp, String roomName, int failedAttempts, LocalDateTime lockedUntil,
                      LocalDateTime lastAttemptAt) {
         this.id = id;
         this.clientIp = clientIp;
@@ -44,11 +39,11 @@ public class RateLimit {
         this.lastAttemptAt = lastAttemptAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

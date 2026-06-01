@@ -1,40 +1,37 @@
 package com.manhattan.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.index.Indexed;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "rooms")
+@Document(collection = "rooms")
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 15)
+    @Indexed(unique = true)
+    @Field("name")
     private String name;
 
-    @Column(name = "password_hash", length = 255)
+    @Field("password_hash")
     private String passwordHash;
 
-    @Column(name = "creator_ip", nullable = false, length = 45)
+    @Field("creator_ip")
     private String creatorIp;
 
-    @Column(name = "created_at", nullable = false)
+    @Field("created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "is_active", nullable = false)
+    @Field("is_active")
     private boolean isActive;
 
     public Room() {
     }
 
-    public Room(Long id, String name, String passwordHash, String creatorIp, LocalDateTime createdAt, boolean isActive) {
+    public Room(String id, String name, String passwordHash, String creatorIp, LocalDateTime createdAt, boolean isActive) {
         this.id = id;
         this.name = name;
         this.passwordHash = passwordHash;
@@ -43,11 +40,11 @@ public class Room {
         this.isActive = isActive;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

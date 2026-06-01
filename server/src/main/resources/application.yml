@@ -2,28 +2,10 @@ server:
   port: 8080
 
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/manhattan?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: manhattan
-    password: manhattan
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    defer-datasource-initialization: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
-  sql:
-    init:
-      mode: never
+  data:
+    mongodb:
+      uri: mongodb+srv://username:9J4PUui2X4MQMeAi@manhattan.2wyxkav.mongodb.net/?appName=manhattan
+      database: manhattan
 
 logging:
   level:
@@ -31,3 +13,4 @@ logging:
     com.manhattan: DEBUG
     org.springframework.web.socket: DEBUG
     org.springframework.messaging: DEBUG
+    org.springframework.data.mongodb: DEBUG

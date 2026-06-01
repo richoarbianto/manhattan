@@ -1,6 +1,6 @@
 [Unit]
 Description=Manhattan E2EE Chat Application
-After=network.target mysql.service
+After=network.target
 
 [Service]
 User=manhattan

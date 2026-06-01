@@ -1,25 +1,15 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: 8080
 
 spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
-      connection-timeout: 30000
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: manhattan
 
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-
-  sql:
-    init:
-      mode: never
+logging:
+  level:
+    root: INFO
+    com.manhattan: INFO
+    org.springframework.web.socket: WARN
+    org.springframework.messaging: WARN

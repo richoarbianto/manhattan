@@ -1,52 +1,44 @@
 package com.manhattan.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "sessions")
+@Document(collection = "sessions")
 public class Session {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "ip_address", nullable = false, length = 45)
+    @Field("ip_address")
     private String ipAddress;
 
-    @Column(name = "room_name", nullable = false, length = 15)
+    @Field("room_name")
     private String roomName;
 
-    @Column(name = "stomp_session_id", nullable = false, length = 64)
+    @Field("stomp_session_id")
     private String stompSessionId;
 
-    @Column(name = "display_name", nullable = false, length = 45)
+    @Field("display_name")
     private String displayName;
 
-    @Column(name = "connected_at", nullable = false)
+    @Field("connected_at")
     private LocalDateTime connectedAt;
 
-    @Column(name = "disconnected_at")
+    @Field("disconnected_at")
     private LocalDateTime disconnectedAt;
 
-    @Column(name = "last_activity_at", nullable = false)
+    @Field("last_activity_at")
     private LocalDateTime lastActivityAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Field("status")
     private SessionStatus status;
 
     public Session() {
     }
 
-    public Session(Long id, String ipAddress, String roomName, String stompSessionId, String displayName,
+    public Session(String id, String ipAddress, String roomName, String stompSessionId, String displayName,
                    LocalDateTime connectedAt, LocalDateTime disconnectedAt, LocalDateTime lastActivityAt,
                    SessionStatus status) {
         this.id = id;
@@ -60,11 +52,11 @@ public class Session {
         this.status = status;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

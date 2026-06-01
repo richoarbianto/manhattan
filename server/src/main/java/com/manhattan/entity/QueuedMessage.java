@@ -1,45 +1,38 @@
 package com.manhattan.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "message_queue")
+@Document(collection = "message_queue")
 public class QueuedMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(name = "target_ip", nullable = false, length = 45)
+    @Field("target_ip")
     private String targetIp;
 
-    @Column(name = "room_name", nullable = false, length = 15)
+    @Field("room_name")
     private String roomName;
 
-    @Column(name = "sender_ip", nullable = false, length = 45)
+    @Field("sender_ip")
     private String senderIp;
 
-    @Lob
-    @Column(name = "ciphertext", nullable = false)
+    @Field("ciphertext")
     private byte[] ciphertext;
 
-    @Column(name = "iv", nullable = false, length = 16)
+    @Field("iv")
     private byte[] iv;
 
-    @Column(name = "created_at", nullable = false)
+    @Field("created_at")
     private LocalDateTime createdAt;
 
     public QueuedMessage() {
     }
 
-    public QueuedMessage(Long id, String targetIp, String roomName, String senderIp, byte[] ciphertext, byte[] iv,
+    public QueuedMessage(String id, String targetIp, String roomName, String senderIp, byte[] ciphertext, byte[] iv,
                          LocalDateTime createdAt) {
         this.id = id;
         this.targetIp = targetIp;
@@ -50,11 +43,11 @@ public class QueuedMessage {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
