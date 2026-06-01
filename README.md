@@ -23,10 +23,10 @@ Identitas pengguna ditentukan oleh IP address. Satu IP, satu sesi.
 
 | Layer | Teknologi |
 |---|---|
-| Server | Java 23, Spring Boot 3.4, WebSocket/STOMP, Gradle |
+| Server | Java 21, Spring Boot 3.4, WebSocket/STOMP, Gradle |
 | Client | Vanilla JS, Tailwind CSS, Web Crypto API, argon2-browser (WASM) |
-| Database | MySQL 8.0 |
-| Deploy | Ubuntu 22.04, Nginx, systemd |
+| Database | MongoDB Atlas |
+| Deploy | Ubuntu 24.04, Nginx 1.31.1, systemd |
 
 ## Struktur project
 
@@ -37,8 +37,8 @@ manhattan/
 │   │   ├── config/          WebSocket dan retry config
 │   │   ├── controller/      STOMP message handlers
 │   │   ├── service/         Logika bisnis
-│   │   ├── repository/      JPA repositories
-│   │   ├── entity/          JPA entities (Room, Session, dll)
+│   │   ├── repository/      MongoDB repositories
+│   │   ├── entity/          MongoDB documents (Room, Session, dll)
 │   │   ├── dto/             Data transfer objects
 │   │   └── interceptor/     IP guard saat WebSocket handshake
 │   └── src/test/            Unit + property-based tests (jqwik)
@@ -54,39 +54,54 @@ manhattan/
 │   │   └── ui/              Komponen UI (room entry, chat, status bar)
 │   └── tests/e2e/           Playwright end-to-end tests
 ├── deploy/                  Nginx config dan systemd service template
-├── deploy.sh                Script deploy satu perintah untuk Ubuntu 22.04
+├── deploy.sh                Script deploy untuk Ubuntu 24.04
 └── .env.example             Template environment variables
 ```
 
 ## Prerequisites
 
-- Java 23 (Eclipse Temurin direkomendasikan)
+- Java 21 (Eclipse Temurin direkomendasikan)
 - Node.js 20 LTS
-- MySQL 8.0
+- MongoDB Atlas account (atau MongoDB lokal)
 - Gradle 8+ (wrapper sudah ada di `server/`)
 
 ## Menjalankan secara lokal
 
 ### 1. Siapkan database
 
+Buat cluster di [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) atau install MongoDB lokal.
+
+Untuk MongoDB Atlas:
+1. Buat cluster gratis (M0)
+2. Whitelist IP address kamu di Network Access
+3. Buat database user
+4. Copy connection string
+
+Untuk MongoDB lokal:
 ```bash
-mysql -u root -p
+# Install MongoDB
+brew install mongodb-community  # macOS
+# atau
+sudo apt install mongodb  # Ubuntu
+
+# Jalankan MongoDB
+mongod --dbpath /path/to/data
 ```
 
-```sql
-CREATE DATABASE manhattan CHARACTER SET utf8mb4;
-CREATE USER 'manhattan'@'localhost' IDENTIFIED BY 'manhattan';
-GRANT ALL ON manhattan.* TO 'manhattan'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-Jalankan schema:
+### 2. Konfigurasi environment
 
 ```bash
-mysql -u manhattan -pmanhattan manhattan < server/src/main/resources/schema.sql
+cp .env.example .env
 ```
 
-### 2. Jalankan server
+Edit `.env`:
+```bash
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/?appName=manhattan
+# atau untuk lokal:
+# MONGODB_URI=mongodb://localhost:27017/manhattan
+```
+
+### 3. Jalankan server
 
 ```bash
 cd server
@@ -95,7 +110,7 @@ cd server
 
 Server berjalan di `http://localhost:8080`.
 
-### 3. Jalankan client
+### 4. Jalankan client
 
 ```bash
 cd client
@@ -113,44 +128,47 @@ Konfigurasi server ada di `server/src/main/resources/application.yml`. Untuk pro
 
 ```bash
 cp .env.example .env
-# Edit .env dengan kredensial database production
+# Edit .env dengan MongoDB connection string
 ```
 
 | Variable | Default | Keterangan |
 |---|---|---|
-| `DB_URL` | `jdbc:mysql://localhost:3306/manhattan` | JDBC URL database |
-| `DB_USERNAME` | `manhattan` | Username database |
-| `DB_PASSWORD` | `manhattan` | Password database |
+| `MONGODB_URI` | `mongodb://localhost:27017/manhattan` | MongoDB connection string |
 | `SERVER_PORT` | `8080` | Port Spring Boot |
 
 ## Deploy ke production
 
-Script `deploy.sh` menangani seluruh proses deploy ke Ubuntu 22.04 LTS dari nol:
+Script `deploy.sh` menangani seluruh proses deploy ke Ubuntu 24.04 LTS:
 
 ```bash
 chmod +x deploy.sh
-sudo ./deploy.sh yourdomain.com
+./deploy.sh
 ```
 
 Yang dilakukan script:
-1. Install Java 21, Node.js 20, MySQL, Nginx
-2. Buat database dan jalankan schema
-3. Build server JAR via Gradle
-4. Build client (bundle JS + minify CSS)
-5. Konfigurasi Nginx sebagai reverse proxy dengan SSL dari Let's Encrypt
-6. Daftarkan dan jalankan systemd service
+1. Install Java 21, Node.js 20, Nginx, Certbot
+2. Build server JAR via Gradle
+3. Build client (bundle JS + minify CSS)
+4. Konfigurasi Nginx sebagai reverse proxy dengan SSL dari Let's Encrypt
+5. Daftarkan dan jalankan systemd service
+6. Setup auto-renewal SSL certificate
+
+Sebelum deploy, pastikan:
+- Domain sudah pointing ke server IP (A record)
+- MongoDB Atlas IP whitelist sudah include server IP
+- Edit `deploy.sh` untuk set domain dan MongoDB URI
 
 Setelah deploy selesai:
 
 ```bash
 # Lihat log
-journalctl -u manhattan -f
+ssh -i ~/.ssh/id_ok ubuntu@SERVER_IP "sudo journalctl -u manhattan -f"
 
 # Restart service
-sudo systemctl restart manhattan
+ssh -i ~/.ssh/id_ok ubuntu@SERVER_IP "sudo systemctl restart manhattan"
 
 # Cek status
-sudo systemctl status manhattan
+ssh -i ~/.ssh/id_ok ubuntu@SERVER_IP "sudo systemctl status manhattan"
 ```
 
 ## Menjalankan tests
